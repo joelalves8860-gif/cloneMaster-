@@ -1,23 +1,25 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const path = require('path');
+const express = require("express");
+const fetch = require("node-fetch"); // ou npm i node-fetch se não tiver
+const cors = require("cors");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Configurar pasta public
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.json());
+app.use(express.static("public")); // para servir index.html e script.js
 
-// Rota teste IA
-app.post('/api/chat', (req, res) => {
-    const userMessage = req.body.message;
-    const botReply = `IA: Recebi sua mensagem -> "${userMessage}"`;
-    res.json({ reply: botReply });
+// Rota para buscar HTML de qualquer URL
+app.post("/get-html", async (req, res) => {
+    const { url } = req.body;
+    if (!url) return res.status(400).send("URL não fornecida");
+
+    try {
+        const response = await fetch(url);
+        const html = await response.text();
+        res.send(html);
+    } catch (err) {
+        res.status(500).send("Erro ao buscar HTML: " + err.message);
+    }
 });
 
-app.listen(PORT, () => {
-    console.log(`CloneMaster rodando em http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(Server rodando na porta ${PORT}));
