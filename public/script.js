@@ -5,28 +5,28 @@ const editor = document.getElementById("editor");
 const iframeContainer = document.getElementById("iframeContainer");
 
 // Função para iniciar clonagem
-botaoClonar.onclick = () => {
+botaoClonar.onclick = async () => {
     const url = prompt("Digite a URL do site que deseja clonar:");
     if (!url) return alert("Nenhuma URL fornecida.");
 
     alert("Clonagem iniciada! 🚀");
-
-    // Limpar iframe anterior
     iframeContainer.innerHTML = "";
 
-    // Criar iframe para mostrar a página
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframeContainer.appendChild(iframe);
+    try {
+        const res = await fetch("/get-html", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url })
+        });
+        const html = await res.text();
+        editor.value = html;
 
-    // Tentar preencher o editor com o HTML do site (pode dar problema de CORS)
-    iframe.onload = () => {
-        try {
-            editor.value = iframe.contentDocument.documentElement.outerHTML;
-        } catch (err) {
-            editor.value = "Não foi possível acessar o HTML desta URL (restrição CORS).";
-        }
-    };
+        const iframe = document.createElement("iframe");
+        iframe.srcdoc = html;
+        iframeContainer.appendChild(iframe);
+    } catch (err) {
+        editor.value = "Erro ao buscar HTML: " + err.message;
+    }
 };
 
 // Função para IA (simulada)
