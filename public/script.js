@@ -1,35 +1,25 @@
-// Selecionando elementos da página
-const botaoClonar = document.querySelector("button");
-const corpo = document.body;
+// Selecionando elementos
+const botaoClonar = document.getElementById("startButton");
+const botaoIA = document.getElementById("iaButton");
+const editor = document.getElementById("editor");
+const iframeContainer = document.getElementById("iframeContainer");
 
-// Função de alerta inicial
-function iniciarClonagem() {
-    let url = prompt("Digite a URL do site que deseja clonar:");
+// Função para iniciar clonagem
+botaoClonar.onclick = () => {
+    const url = prompt("Digite a URL do site que deseja clonar:");
     if (!url) return alert("Nenhuma URL fornecida.");
 
-    // Mostrar que começou a clonagem
-    alert("Clonagem iniciada! 🚀\nA página será carregada no editor.");
+    alert("Clonagem iniciada! 🚀");
 
-    // Criar iframe para carregar o site
-    let iframe = document.createElement("iframe");
+    // Limpar iframe anterior
+    iframeContainer.innerHTML = "";
+
+    // Criar iframe para mostrar a página
+    const iframe = document.createElement("iframe");
     iframe.src = url;
-    iframe.style.width = "100%";
-    iframe.style.height = "500px";
-    iframe.style.border = "1px solid #ccc";
-    iframe.style.marginTop = "20px";
+    iframeContainer.appendChild(iframe);
 
-    // Criar editor para modificar HTML
-    let editor = document.createElement("textarea");
-    editor.style.width = "100%";
-    editor.style.height = "200px";
-    editor.style.marginTop = "10px";
-    editor.placeholder = "O HTML clonado aparecerá aqui para editar...";
-
-    // Inserir no corpo
-    corpo.appendChild(iframe);
-    corpo.appendChild(editor);
-
-    // Preencher editor com o HTML do site depois de carregar
+    // Tentar preencher o editor com o HTML do site (pode dar problema de CORS)
     iframe.onload = () => {
         try {
             editor.value = iframe.contentDocument.documentElement.outerHTML;
@@ -37,7 +27,17 @@ function iniciarClonagem() {
             editor.value = "Não foi possível acessar o HTML desta URL (restrição CORS).";
         }
     };
-}
+};
 
-// Adicionar função ao botão
-botaoClonar.onclick = iniciarClonagem;
+// Função para IA (simulada)
+botaoIA.onclick = () => {
+    const conteudoAtual = editor.value;
+    if (!conteudoAtual) return alert("O editor está vazio.");
+
+    alert("IA gerando melhorias para o HTML... 🚀");
+
+    // Simulação de IA (colocar API real depois)
+    const respostaIA = <!-- IA Melhorou este HTML -->\n${conteudoAtual}\n<!-- Fim IA -->;
+
+    editor.value = respostaIA;
+};
